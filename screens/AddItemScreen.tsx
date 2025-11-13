@@ -7,10 +7,18 @@
  * 
  * All references follow Harvard style and are listed in the README.
  */
+// React Native components used for layout and interactivity
+// Author: Meta Platforms, Inc.
+// Date Accessed: 13 November 2025
+// Source: https://reactnative.dev
+
+// React hooks and context API used for state management
+// Author: Meta Platforms, Inc.
+// Date Accessed: 13 November 2025
+// Source: https://reactjs.org
+
 import React, { useState, useContext } from 'react';
-import { View, TextInput, Button, StyleSheet, Text } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import ConfettiCannon from 'react-native-confetti-cannon';
+import { View, TextInput, Button, StyleSheet, Text, Alert } from 'react-native';
 import { MenuContext } from '../context/MenuContext';
 
 export default function AddItemScreen() {
@@ -20,102 +28,93 @@ export default function AddItemScreen() {
   const { addMenuItem } = context;
 
   const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
+  const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [course, setCourse] = useState('Starters');
-  const [image, setImage] = useState('');
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [course, setCourse] = useState('');
 
-  const handleAdd = () => {
-    if (name && desc && price && image) {
-      addMenuItem({ name, description: desc, price, course, image });
-      setName('');
-      setDesc('');
-      setPrice('');
-      setImage('');
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 3000);
+  const handleSubmit = () => {
+    if (!name || !description || !price || !course) {
+      Alert.alert('Please fill in all fields');
+      return;
     }
+
+    addMenuItem({
+      name, description, price, course,
+      image: ''
+    });
+    setName('');
+    setDescription('');
+    setPrice('');
+    setCourse('');
+    Alert.alert('Item added successfully!');
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>✨ Add a New Dish ✨</Text>
+      <Text style={styles.header}>Add a New Menu Item</Text>
 
+      <Text style={styles.label}>Course (Starters, Mains, Desserts)</Text>
       <TextInput
-        placeholder="Dish Name"
+        style={styles.input}
+        value={course}
+        onChangeText={setCourse}
+        placeholder="e.g. Starters"
+        accessibilityLabel="Course input"
+      />
+
+      <Text style={styles.label}>Name</Text>
+      <TextInput
+        style={styles.input}
         value={name}
         onChangeText={setName}
-        style={styles.input}
-        placeholderTextColor="#888"
+        placeholder="e.g. Garlic Bread"
+        accessibilityLabel="Name input"
       />
+
+      <Text style={styles.label}>Description</Text>
       <TextInput
-        placeholder="Description"
-        value={desc}
-        onChangeText={setDesc}
         style={styles.input}
-        placeholderTextColor="#888"
+        value={description}
+        onChangeText={setDescription}
+        placeholder="e.g. Crispy and golden"
+        accessibilityLabel="Description input"
       />
+
+      <Text style={styles.label}>Price</Text>
       <TextInput
-        placeholder="Price"
+        style={styles.input}
         value={price}
         onChangeText={setPrice}
+        placeholder="e.g. 45.00"
         keyboardType="numeric"
-        style={styles.input}
-        placeholderTextColor="#888"
+        accessibilityLabel="Price input"
       />
-      <TextInput
-        placeholder="Image URL"
-        value={image}
-        onChangeText={setImage}
-        style={styles.input}
-        placeholderTextColor="#888"
-      />
-      <Picker
-        selectedValue={course}
-        onValueChange={setCourse}
-        style={styles.picker}
-        dropdownIconColor="#FF6F61"
-      >
-        <Picker.Item label="Starters 🧄" value="Starters" />
-        <Picker.Item label="Mains 🥩" value="Mains" />
-        <Picker.Item label="Desserts 🍰" value="Desserts" />
-      </Picker>
-      <Button title="Add Dish to Scroll" onPress={handleAdd} color="#FF6F61" />
 
-      {showConfetti && (
-        <ConfettiCannon count={100} origin={{ x: -10, y: 0 }} fadeOut={true} />
-      )}
+      <Button title="Add Item" onPress={handleSubmit} color="#FF6F61" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0D0D0D',
-    padding: 20,
-  },
-  title: {
-    fontSize: 22,
+  container: { flex: 1, padding: 20, backgroundColor: '#000' },
+  header: {
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FF6F61',
     marginBottom: 20,
     textAlign: 'center',
   },
+  label: {
+    color: '#FF6F61',
+    fontWeight: 'bold',
+    marginTop: 10,
+  },
   input: {
     borderWidth: 1,
-    borderColor: '#333',
-    backgroundColor: '#1A1A1A',
-    color: '#FFF',
-    marginBottom: 12,
-    padding: 10,
-    borderRadius: 8,
-  },
-  picker: {
-    color: '#FFF',
-    backgroundColor: '#1A1A1A',
-    marginBottom: 12,
-    borderRadius: 8,
+    borderColor: '#CCC',
+    padding: 8,
+    marginBottom: 10,
+    backgroundColor: '#FFF',
+    borderRadius: 6,
   },
 });

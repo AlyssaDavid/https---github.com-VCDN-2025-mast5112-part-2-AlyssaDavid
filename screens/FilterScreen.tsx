@@ -7,9 +7,18 @@
  * 
  * All references follow Harvard style and are listed in the README.
  */
+// React Native components used for layout and interactivity
+// Author: Meta Platforms, Inc.
+// Date Accessed: 13 November 2025
+// Source: https://reactnative.dev
+
+// React hooks and context API used for state management
+// Author: Meta Platforms, Inc.
+// Date Accessed: 13 November 2025
+// Source: https://reactjs.org
+
 import React, { useState, useContext } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
+import { View, Text, Button, FlatList, StyleSheet } from 'react-native';
 import { MenuContext } from '../context/MenuContext';
 import MenuItemCard from '../components/MenuItemCard';
 
@@ -18,30 +27,70 @@ export default function FilterScreen() {
   if (!context) throw new Error("MenuContext not found");
 
   const { menuItems } = context;
-  const [selectedCourse, setSelectedCourse] = useState('Starters');
+  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
 
-  const filteredItems = menuItems.filter(item => item.course === selectedCourse);
+  const filteredItems = selectedCourse
+    ? menuItems.filter(item => item.course === selectedCourse)
+    : [];
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Filter by Course</Text>
-      <Picker selectedValue={selectedCourse} onValueChange={setSelectedCourse} style={styles.picker}>
-        <Picker.Item label="Starters" value="Starters" />
-        <Picker.Item label="Mains" value="Mains" />
-        <Picker.Item label="Desserts" value="Desserts" />
-      </Picker>
+      <View style={styles.buttonRow}>
+        {['Starters', 'Mains', 'Desserts'].map(course => (
+          <Button
+            key={course}
+            title={course}
+            onPress={() => setSelectedCourse(course)}
+            color={selectedCourse === course ? '#FF6F61' : '#888'}
+          />
+        ))}
+      </View>
 
-      <FlatList
-        data={filteredItems}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => <MenuItemCard item={item} />}
-      />
+      {selectedCourse && (
+        <Text style={styles.subheader}>
+          Showing: {selectedCourse} ({filteredItems.length} items)
+        </Text>
+      )}
+
+      {filteredItems.length === 0 ? (
+        <Text style={styles.empty}>No items found for this course.</Text>
+      ) : (
+        <FlatList
+          data={filteredItems}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => <MenuItemCard item={item} />}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        />
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000', padding: 16 },
-  header: { fontSize: 20, fontWeight: 'bold', color: '#FFF', marginBottom: 12 },
-  picker: { color: '#FFF', backgroundColor: '#222', marginBottom: 12 },
+  container: { flex: 1, padding: 16, backgroundColor: '#000' },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FF6F61',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 16,
+  },
+  subheader: {
+    fontSize: 16,
+    color: '#FF6F61',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  empty: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 40,
+  },
 });

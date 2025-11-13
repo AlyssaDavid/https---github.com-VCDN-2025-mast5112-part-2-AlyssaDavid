@@ -23,8 +23,18 @@
 // Author: Alyssa David (2025), adapted from React Context API
 // Source: Internal coursework reference
 
+// React Native components used for layout and styling
+// Author: Meta Platforms, Inc.
+// Date Accessed: 13 November 2025
+// Source: https://reactnative.dev
+
+// React hooks and context API used for state management
+// Author: Meta Platforms, Inc.
+// Date Accessed: 13 November 2025
+// Source: https://reactjs.org
+
 import React, { useContext } from 'react';
-import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Image } from 'react-native';
 import { MenuContext } from '../context/MenuContext';
 import MenuItemCard from '../components/MenuItemCard';
 
@@ -59,13 +69,17 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={menuItems}
-        keyExtractor={(_, index) => index.toString()}
-        renderItem={({ item }) => <MenuItemCard item={item} />}
-        ListHeaderComponent={renderHeader}
-        contentContainerStyle={{ paddingBottom: 40 }}
-      />
+      {menuItems.length === 0 ? (
+        <Text style={styles.empty}>No items yet—add your first dish!</Text>
+      ) : (
+        <FlatList
+          data={menuItems}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={({ item }) => <MenuItemCard item={item} />}
+          ListHeaderComponent={renderHeader}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        />
+      )}
     </View>
   );
 }
@@ -102,5 +116,11 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     marginTop: 20,
     textAlign: 'center',
+  },
+  empty: {
+    fontSize: 16,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 40,
   },
 });
