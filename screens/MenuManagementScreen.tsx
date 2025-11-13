@@ -20,8 +20,9 @@
 import React, { useContext } from 'react';
 import { View, Text, FlatList, Button, StyleSheet, Alert } from 'react-native';
 import { MenuContext } from '../context/MenuContext';
+import MenuItemCard from '../components/MenuItemCard';
 
-// Local type declaration
+// Declare the shape of a menu item
 type MenuItem = {
   name: string;
   description: string;
@@ -31,7 +32,13 @@ type MenuItem = {
 
 export default function MenuManagementScreen() {
   const context = useContext(MenuContext);
-  if (!context) return <Text style={styles.error}>MenuContext not available</Text>;
+  if (!context) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.error}>MenuContext not available</Text>
+      </View>
+    );
+  }
 
   const { menuItems, removeMenuItem } = context;
 
@@ -41,7 +48,7 @@ export default function MenuManagementScreen() {
       `Are you sure you want to remove "${itemName}" from the menu?`,
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Remove', style: 'destructive', onPress: () => removeMenuItem(itemName) },
+        { text: 'Remove', style: 'destructive', onPress: () => removeMenuItem },
       ]
     );
   };
